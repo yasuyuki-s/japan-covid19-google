@@ -1,0 +1,55 @@
+.list-box {
+  display: table;
+  border: 1px solid black;
+  width: 90%;
+}
+.list-img,
+.list-text {
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 30px;
+}
+.list-img img{
+	width: 100%;
+}
+.list-text{
+	width: 20%;
+}
+
+.region {
+	font-size:30px;
+	margin-top:30px;
+}
+.top_list{
+	margin-top:5px;
+}
+/* パソコン・スマホ共通のCSS */
+#PageTopBtn {
+    position: fixed; /*ボタンの配置場所を固定*/
+    bottom: -10px; /*下からのボタンの配置場所を指定*/
+    right: 10px; /*右からのボタンの配置場所を指定*/
+}
+#PageTopBtn a {
+    display: block; /*配置の調整*/
+    text-decoration: none; /*文字の下線を消す*/
+    color: #fff; /*文字の色*/
+    background: #00bfff; /*ボタンの背景色*/
+    text-align: center; /*文字を中央に配置*/
+    border-radius: 5%; /*ボタンの角を少し丸くする*/
+    outline: none; /*クリックしたときの黒い枠を消す*/
+}
+#PageTopBtn a:hover {
+    text-decoration: none; 
+    background: #87cefa; /*マウスオーバー時の背景色*/
+}
+
+/* パソコンで表示する場合のCSS */
+
+#PageTopBtn {
+    font-size: 20px; /*文字のサイズ*/
+}
+#PageTopBtn a {
+    width: 140px; /*ボタンの幅*/
+    padding: 24px 0; /*文字の配置場所の調整*/
+}
+

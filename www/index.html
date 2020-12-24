@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>GoogleによるCOVID-19感染予測と実報告数の推移</title>
+    <meta name="description" content="Googleの感染予測と実報告数を比較しています">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    <meta http-equiv="Content-Script-Type" content="text/javascript">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="scripts/scroll.js"></script>
+    <link rel="stylesheet" href="css/stylesheet.css" type="text/css">
+
+  </head>
+
+  <body>
+
+    <header>
+      <h1><span class="text">GoogleによるCOVID-19感染予測と実報告数の推移</span></h1>
+    </header>
+    <nav>
+        <h3 class="text">What's this?</h3>
+        <span class="text">Googleの公開する「<a href="https://datastudio.google.com/u/0/reporting/8224d512-a76e-4d38-91c1-935ba119eb8f/page/ncZpB?s=nXbF2P6La2M">COVID-19感染予測(日本版)</a>」による陽性者数の推移を予測基準日毎に実際の報告数と比較したグラフです。定期的にデータ取得し更新します。</span>
+
+        <h3 class="text">凡例</h3>
+        <ul class="main">
+          <li class="legend">Forecast(MMDD)…Googleによる予測値(予測基準日） ※95%予測区間も併記</li>
+          <li class="legend">Historic(MMDD)…実報告数（最終更新日）</li>
+          <li class="legend">Historic(7dSMA)…実報告数（7日移動平均線）</li>
+        </ul>
+        <h3 id="list", class="text">実報告数について</h3>
+        <span class="text">○が付いている都道府県は各自治体の公開する最新の陽性報告数のデータを反映しています。(毎日更新)<br>それ以外の都道府県の陽性報告数は、Googleのcsvから引用するため、数日のラグがあります。(3日毎に更新)</span>
+        <ul class="main">
+          <li class="top_list"><a href="#TOHOKU">北海道・東北</a></li>
+          <li class="top_list"><a href="#KANTO">関東</a></li>
+          <li class="top_list"><a href="#KOSHINETSU">甲信越</a></li>
+          <li class="top_list"><a href="#TOKAI">東海</a></li>
+          <li class="top_list"><a href="#HOKURIKU">北陸</a></li>
+          <li class="top_list"><a href="#KANSAI">関西</a></li>
+          <li class="top_list"><a href="#CHUGOKU">中国</a></li>
+          <li class="top_list"><a href="#SHIKOKU">四国</a></li>
+          <li class="top_list"><a href="#KYUSYU">九州・沖縄</a></li>
+        </ul>
+    </nav>
+    <article>
+      <ul class="main">
+        <li id="TOHOKU", class="region">北海道・東北</li>
+          <ul class="sub">
+            <li class = "list-box">
+              <a href="img/HOKKAIDO.png">
+                <div class="list-text"><span class="text">北海道○</span></div>
+                <div class="list-img"><img src="thumb/HOKKAIDO.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/AOMORI.png">
+                <div class="list-text"><span class="text">青森県</span></div>
+                <div class="list-img"><img src="thumb/AOMORI.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/AKITA.png">
+                <div class="list-text"><span class="text">秋田県</span></div>
+                <div class="list-img"><img src="thumb/AKITA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/IWATE.png">
+                <div class="list-text"><span class="text">岩手県</span></div>
+                <div class="list-img"><img src="thumb/IWATE.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/YAMAGATA.png">
+                <div class="list-text"><span class="text">山形県</span></div>
+                <div class="list-img"><img src="thumb/YAMAGATA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/MIYAGI.png">
+                <div class="list-text"><span class="text">宮城県</span></div>
+                <div class="list-img"><img src="thumb/MIYAGI.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/FUKUSHIMA.png">
+                <div class="list-text"><span class="text">福島県</span></div>
+                <div class="list-img"><img src="thumb/FUKUSHIMA.png"></div>
+              </a>
+            </li>
+          </ul>
+        <li id="KANTO", class="region">関東</li>
+          <ul class="sub">
+            <li class = "list-box">
+              <a href="img/IBARAKI.png">
+                <div class="list-text"><span class="text">茨城県</span></div>
+                <div class="list-img"><img src="thumb/IBARAKI.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/TOCHIGI.png">
+                <div class="list-text"><span class="text">栃木県</span></div>
+                <div class="list-img"><img src="thumb/TOCHIGI.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/GUNMA.png">
+                <div class="list-text"><span class="text">群馬県</span></div>
+                <div class="list-img"><img src="thumb/GUNMA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/SAITAMA.png">
+                <div class="list-text"><span class="text">埼玉県</span></div>
+                <div class="list-img"><img src="thumb/SAITAMA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/CHIBA.png">
+                <div class="list-text"><span class="text">千葉県</span></div>
+                <div class="list-img"><img src="thumb/CHIBA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/TOKYO.png">
+                <div class="list-text"><span class="text">東京都○</span></div>
+                <div class="list-img"><img src="thumb/TOKYO.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/KANAGAWA.png">
+                <div class="list-text"><span class="text">神奈川県</span></div>
+                <div class="list-img"><img src="thumb/KANAGAWA.png"></div>
+              </a>
+            </li>
+          </ul>
+        <li id="KOSHINETSU", class="region">甲信越</li>
+          <ul class="sub">
+            <li class = "list-box">
+              <a href="img/NIIGATA.png">
+                <div class="list-text"><span class="text">新潟県</span></div>
+                <div class="list-img"><img src="thumb/NIIGATA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/NAGANO.png">
+                <div class="list-text"><span class="text">長野県</span></div>
+                <div class="list-img"><img src="thumb/NAGANO.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/YAMANASHI.png">
+                <div class="list-text"><span class="text">山梨県</span></div>
+                <div class="list-img"><img src="thumb/YAMANASHI.png"></div>
+              </a>
+            </li>
+          </ul>
+        <li id="TOKAI", class="region">東海</li>
+          <ul class="sub">
+            <li class = "list-box">
+              <a href="img/SHIZUOKA.png">
+                <div class="list-text"><span class="text">静岡県</span></div>
+                <div class="list-img"><img src="thumb/SHIZUOKA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/AICHI.png">
+                <div class="list-text"><span class="text">愛知県</span></div>
+                <div class="list-img"><img src="thumb/AICHI.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/GIFU.png">
+                <div class="list-text"><span class="text">岐阜県</span></div>
+                <div class="list-img"><img src="thumb/GIFU.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/MIE.png">
+                <div class="list-text"><span class="text">三重県</span></div>
+                <div class="list-img"><img src="thumb/MIE.png"></div>
+              </a>
+            </li>
+          </ul>
+        <li id="HOKURIKU", class="region">北陸</li>
+          <ul class="sub">
+            <li class = "list-box">
+              <a href="img/TOYAMA.png">
+                <div class="list-text"><span class="text">富山県</span></div>
+                <div class="list-img"><img src="thumb/TOYAMA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/ISHIKAWA.png">
+                <div class="list-text"><span class="text">石川県</span></div>
+                <div class="list-img"><img src="thumb/ISHIKAWA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/FUKUI.png">
+                <div class="list-text"><span class="text">福井県</span></div>
+                <div class="list-img"><img src="thumb/FUKUI.png"></div>
+              </a>
+            </li>
+          </ul>
+        <li id="KANSAI", class="region">関西</li>
+          <ul class="sub">
+            <li class = "list-box">
+              <a href="img/SHIGA.png">
+                <div class="list-text"><span class="text">滋賀県</span></div>
+                <div class="list-img"><img src="thumb/SHIGA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/KYOTO.png">
+                <div class="list-text"><span class="text">京都府</span></div>
+                <div class="list-img"><img src="thumb/KYOTO.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/OSAKA.png">
+                <div class="list-text"><span class="text">大阪府○</span></div>
+                <div class="list-img"><img src="thumb/OSAKA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/HYOGO.png">
+                <div class="list-text"><span class="text">兵庫県</span></div>
+                <div class="list-img"><img src="thumb/HYOGO.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/NARA.png">
+                <div class="list-text"><span class="text">奈良県</span></div>
+                <div class="list-img"><img src="thumb/NARA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/WAKAYAMA.png">
+                <div class="list-text"><span class="text">和歌山県</span></div>
+                <div class="list-img"><img src="thumb/WAKAYAMA.png"></div>
+              </a>
+            </li>
+          </ul>
+        <li id="CHUGOKU", class="region">中国</li>
+          <ul class="sub">
+            <li class = "list-box">
+              <a href="img/TOTTORI.png">
+                <div class="list-text"><span class="text">鳥取県</span></div>
+                <div class="list-img"><img src="thumb/TOTTORI.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/SHIMANE.png">
+                <div class="list-text"><span class="text">島根県</span></div>
+                <div class="list-img"><img src="thumb/SHIMANE.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/OKAYAMA.png">
+                <div class="list-text"><span class="text">岡山県</span></div>
+                <div class="list-img"><img src="thumb/OKAYAMA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/HIROSHIMA.png">
+                <div class="list-text"><span class="text">広島県○</span></div>
+                <div class="list-img"><img src="thumb/HIROSHIMA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/YAMAGUCHI.png">
+                <div class="list-text"><span class="text">山口県</span></div>
+                <div class="list-img"><img src="thumb/YAMAGUCHI.png"></div>
+              </a>
+            </li>
+          </ul>
+        <li id="SHIKOKU", class="region">四国</li>
+          <ul class="sub">
+            <li class = "list-box">
+              <a href="img/KAGAWA.png">
+                <div class="list-text"><span class="text">香川県</span></div>
+                <div class="list-img"><img src="thumb/KAGAWA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/EHIME.png">
+                <div class="list-text"><span class="text">愛媛県○</span></div>
+                <div class="list-img"><img src="thumb/EHIME.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/TOKUSHIMA.png">
+                <div class="list-text"><span class="text">徳島県</span></div>
+                <div class="list-img"><img src="thumb/TOKUSHIMA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/KOCHI.png">
+                <div class="list-text"><span class="text">高知県</span></div>
+                <div class="list-img"><img src="thumb/KOCHI.png"></div>
+              </a>
+            </li>
+          </ul>
+        <li id="KYUSYU", class="region">九州・沖縄</li>
+          <ul class="sub">
+            <li class = "list-box">
+              <a href="img/FUKUOKA.png">
+                <div class="list-text"><span class="text">福岡県○</span></div>
+                <div class="list-img"><img src="thumb/FUKUOKA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/SAGA.png">
+                <div class="list-text"><span class="text">佐賀県</span></div>
+                <div class="list-img"><img src="thumb/SAGA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/NAGASAKI.png">
+                <div class="list-text"><span class="text">長崎県</span></div>
+                <div class="list-img"><img src="thumb/NAGASAKI.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/KUMAMOTO.png">
+                <div class="list-text"><span class="text">熊本県</span></div>
+                <div class="list-img"><img src="thumb/KUMAMOTO.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/OITA.png">
+                <div class="list-text"><span class="text">大分県</span></div>
+                <div class="list-img"><img src="thumb/OITA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/MIYAZAKI.png">
+                <div class="list-text"><span class="text">宮崎県</span></div>
+                <div class="list-img"><img src="thumb/MIYAZAKI.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/KAGOSHIMA.png">
+                <div class="list-text"><span class="text">鹿児島県</span></div>
+                <div class="list-img"><img src="thumb/KAGOSHIMA.png"></div>
+              </a>
+            </li>
+            <li class = "list-box">
+              <a href="img/OKINAWA.png">
+                <div class="list-text"><span class="text">沖縄県</span></div>
+                <div class="list-img"><img src="thumb/OKINAWA.png"></div>
+              </a>
+            </li>
+          </ul>
+      </ul>
+    </article>
+
+
+    <footer>
+
+    </footer>
+    <p id="PageTopBtn"><a href="#wrap">▲一覧へ戻る</a></p>
+  </body>
+
+</html>
