@@ -7,16 +7,7 @@ import seaborn as sns
 # import plotly.graph_objects as go
 # import plotly.express as px
 import glob
-import requests
-import urllib3
 
-requests.packages.urllib3.disable_warnings()
-requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
-try:
-    requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
-except AttributeError:
-    # no pyopenssl support used / needed / available
-    pass
 sns.set()
 
 #googleによる「COVID-19感染予測（日本版）」のcsvからデータを抽出する
@@ -78,10 +69,10 @@ def historic_data(prefecture):
         data = pd.read_csv("https://www.harp.lg.jp/opendata/dataset/1369/resource/3132/010006_hokkaido_covid19_patients.csv",encoding="shift_jis")
         observed = standard_format(data)
 
-    # elif prefecture == "HIROSHIMA":
-    #     data = pd.read_csv("https://www.pref.hiroshima.lg.jp/soshiki_file/brand/covid19/opendata/340006_hiroshima_covid19_03_status_items.csv",encoding="shift_jis")
-    #     data_t = pd.to_datetime(data["年月日"], format='%Y-%m-%d')
-    #     observed = pd.DataFrame({"date": data_t, "confirmed": data["新規陽性者"], "cumulative_confirmed": data["陽性患者_累計"]})       
+    elif prefecture == "HIROSHIMA":
+        data = pd.read_csv("https://www.pref.hiroshima.lg.jp/soshiki_file/brand/covid19/opendata/340006_hiroshima_covid19_03_status_items.csv",encoding="shift_jis")
+        data_t = pd.to_datetime(data["年月日"], format='%Y-%m-%d')
+        observed = pd.DataFrame({"date": data_t, "confirmed": data["新規陽性者"], "cumulative_confirmed": data["陽性患者_累計"]})       
     elif prefecture == "EHIME":
         data = pd.read_csv("https://www.pref.ehime.jp/opendata-catalog/dataset/2174/resource/7072/380008_ehime_covid19_patients.csv")
         observed = standard_format(data)        
