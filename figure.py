@@ -142,8 +142,7 @@ def plot_by_matplotlib(prefecture, google_files):
     fig.savefig(label)
     plt.close(fig)
 
-google_files = glob.glob("./google_files/*")
-google_files.reverse()
+google_files = sorted(glob.glob("./google_files/*"))
 google_files.append("https://storage.googleapis.com/covid-external/forecast_JAPAN_PREFECTURE_28.csv")
 
 data = pd.read_csv("https://storage.googleapis.com/covid-external/forecast_JAPAN_PREFECTURE_28.csv")
