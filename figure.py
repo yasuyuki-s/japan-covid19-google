@@ -7,6 +7,8 @@ import seaborn as sns
 # import plotly.graph_objects as go
 # import plotly.express as px
 import glob
+from bs4 import BeautifulSoup
+import requests
 
 sns.set()
 
@@ -62,7 +64,11 @@ def historic_data(prefecture):
         observed = pd.DataFrame({"date": data_t, "confirmed": data["陽性人数"], "cumulative_confirmed": data["陽性累計"]})
     
     elif prefecture == "FUKUOKA":
-        data = pd.read_csv("https://ckan.open-governmentdata.org/dataset/8a9688c2-7b9f-4347-ad6e-de3b339ef740/resource/765d78d5-6754-43eb-850e-a658b086469b/download/400009_pref_fukuoka_covid19_patients.csv")
+        html = requests.get("https://ckan.open-governmentdata.org/dataset/401000_pref_fukuoka_covid19_patients")
+        soup = BeautifulSoup(html.content, "html.parser")
+        data_id = soup.find(class_="resource-item").get("data-id")
+        url = "https://ckan.open-governmentdata.org/dataset/8a9688c2-7b9f-4347-ad6e-de3b339ef740/resource/" + data_id + "/download/400009_pref_fukuoka_covid19_patients.csv"
+        data = pd.read_csv(url)
         observed = standard_format(data)
     
     elif prefecture == "HOKKAIDO":
