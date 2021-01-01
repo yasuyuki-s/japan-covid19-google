@@ -16,21 +16,25 @@ sns.set()
 #googleによる「COVID-19感染予測（日本版）」のcsvデータを取得する
 def get_gdata():
     g_url = "https://storage.googleapis.com/covid-external/forecast_JAPAN_PREFECTURE_28.csv"
+    google_files = sorted(glob.glob("./google_files/*"))
+    google_files.append(g_url)
+    google_pd_datas = []
+    for filename in google_files:
+        gdata = pd.read_csv(filename)
+        google_pd_datas.append(gdata)
 
-    g_data = pd.read_csv(g_url)
     #予測値を算出した基準日
-    f_date = pd.to_datetime(g_data["forecast_date"], format='%Y-%m-%d').iat[0]
+    f_date = pd.to_datetime(gdata["forecast_date"], format='%Y-%m-%d').iat[0]
     #予測基準日をYYYYMMDDの形式に変換
     f_date = "{:04d}{:02d}{:02d}".format(f_date.year,f_date.month,f_date.day)
     filename = "google_files_storage/forecast_JAPAN_PREFECTURE_28_" + f_date + ".csv"
     urllib.request.urlretrieve(g_url,filename)
 
-    return filename
+    return google_pd_datas
 
 
 #googleによる「COVID-19感染予測（日本版）」のcsvからデータを抽出する
-def pred_data(filename,prefecture):
-    gdata = pd.read_csv(filename)
+def pred_data(gdata,prefecture):
     #指定した都道府県のデータを抽出
     ext = gdata[gdata["prefecture_name"] == prefecture].copy()
     #日付データをdatetime形式に変換
@@ -69,7 +73,7 @@ def standard_format(data):
     return observed
 
 #都道府県別の陽性者数（累計・日別）時系列データを取得
-def historic_data(prefecture,latest_gfile):
+def historic_data(prefecture,gdata):
     if prefecture == "TOKYO":
         data = pd.read_csv("https://stopcovid19.metro.tokyo.lg.jp/data/130001_tokyo_covid19_patients.csv")
         observed = standard_format(data)
@@ -100,7 +104,7 @@ def historic_data(prefecture,latest_gfile):
         observed = standard_format(data)        
     else:
         #上記以外の都道府県のデータは、googleの最新csvから抽出する
-        data = pd.read_csv(latest_gfile)
+        data = gdata
         ext = data[data["prefecture_name"] == prefecture]
         ext = ext.dropna(subset=["cumulative_confirmed_ground_truth"])
         data_t = pd.to_datetime(ext["target_prediction_date"], format='%Y-%m-%d')
@@ -113,7 +117,7 @@ def historic_data(prefecture,latest_gfile):
     sma_o = observed["confirmed"].rolling(7).mean()
     return date_o, cumulative_o, daily_o, o_date, sma_o
 
-def plot_by_matplotlib(prefecture, google_files):
+def plot_by_matplotlib(prefecture, google_pd_datas):
     xfmt = mdates.DateFormatter("%m/%d")
     xloc = mdates.DayLocator(bymonthday=None, interval=2)
     fig = plt.figure(figsize=(15,20))
@@ -121,15 +125,15 @@ def plot_by_matplotlib(prefecture, google_files):
     bx = fig.add_subplot(211)
     cmap = plt.get_cmap("tab10")
     i=0
-    for filename in google_files:
-        date_p, pred, pred_q975, pred_q025, new_confirmed, f_date = pred_data(filename,prefecture)
+    for gdata in google_pd_datas:
+        date_p, pred, pred_q975, pred_q025, new_confirmed, f_date = pred_data(gdata,prefecture)
         label= "Forecast" + f_date
         ax.plot(date_p,pred,label=label)
         ax.fill_between(date_p,pred_q025,pred_q975,alpha=0.3)
         bx.plot(date_p,new_confirmed,label=label)
         i += 1
 
-    date_o, cumulative_o, daily_o, o_date, sma_o = historic_data(prefecture,google_files[-1])
+    date_o, cumulative_o, daily_o, o_date, sma_o = historic_data(prefecture,google_pd_datas[-1])
 
     label= "Historic" + o_date
     ax.plot(date_o,cumulative_o, label=label, marker= ".")
@@ -164,15 +168,14 @@ def plot_by_matplotlib(prefecture, google_files):
     fig.savefig(label)
     plt.close(fig)
 
-google_files = sorted(glob.glob("./google_files/*"))
-latest_gfile = get_gdata()
-google_files.append(latest_gfile)
 
-data = pd.read_csv(latest_gfile)
-pref_list = data["prefecture_name"].unique().tolist()
+
+google_pd_datas = get_gdata()
+latest_data = google_pd_datas[-1]
+pref_list = latest_data["prefecture_name"].unique().tolist()
 
 print("Processing start------")
 for prefecture in pref_list:
     print(prefecture)
-    plot_by_matplotlib(prefecture, google_files)
+    plot_by_matplotlib(prefecture, google_pd_datas)
 print("Processing finish-----")
