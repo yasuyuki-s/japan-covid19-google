@@ -9,8 +9,24 @@ import seaborn as sns
 import glob
 from bs4 import BeautifulSoup
 import requests
+import urllib.request
 
 sns.set()
+
+#googleによる「COVID-19感染予測（日本版）」のcsvデータを取得する
+def get_gdata():
+    g_url = "https://storage.googleapis.com/covid-external/forecast_JAPAN_PREFECTURE_28.csv"
+
+    g_data = pd.read_csv(g_url)
+    #予測値を算出した基準日
+    f_date = pd.to_datetime(g_data["forecast_date"], format='%Y-%m-%d').iat[0]
+    #予測基準日をYYYYMMDDの形式に変換
+    f_date = "{:04d}{:02d}{:02d}".format(f_date.year,f_date.month,f_date.day)
+    filename = "google_files_storage/forecast_JAPAN_PREFECTURE_28_" + f_date + ".csv"
+    urllib.request.urlretrieve(g_url,filename)
+
+    return filename
+
 
 #googleによる「COVID-19感染予測（日本版）」のcsvからデータを抽出する
 def pred_data(filename,prefecture):
@@ -53,7 +69,7 @@ def standard_format(data):
     return observed
 
 #都道府県別の陽性者数（累計・日別）時系列データを取得
-def historic_data(prefecture):
+def historic_data(prefecture,latest_gfile):
     if prefecture == "TOKYO":
         data = pd.read_csv("https://stopcovid19.metro.tokyo.lg.jp/data/130001_tokyo_covid19_patients.csv")
         observed = standard_format(data)
@@ -84,7 +100,7 @@ def historic_data(prefecture):
         observed = standard_format(data)        
     else:
         #上記以外の都道府県のデータは、googleの最新csvから抽出する
-        data = pd.read_csv("https://storage.googleapis.com/covid-external/forecast_JAPAN_PREFECTURE_28.csv")
+        data = pd.read_csv(latest_gfile)
         ext = data[data["prefecture_name"] == prefecture]
         ext = ext.dropna(subset=["cumulative_confirmed_ground_truth"])
         data_t = pd.to_datetime(ext["target_prediction_date"], format='%Y-%m-%d')
@@ -113,7 +129,7 @@ def plot_by_matplotlib(prefecture, google_files):
         bx.plot(date_p,new_confirmed,label=label)
         i += 1
 
-    date_o, cumulative_o, daily_o, o_date, sma_o = historic_data(prefecture)
+    date_o, cumulative_o, daily_o, o_date, sma_o = historic_data(prefecture,google_files[-1])
 
     label= "Historic" + o_date
     ax.plot(date_o,cumulative_o, label=label, marker= ".")
@@ -149,9 +165,10 @@ def plot_by_matplotlib(prefecture, google_files):
     plt.close(fig)
 
 google_files = sorted(glob.glob("./google_files/*"))
-google_files.append("https://storage.googleapis.com/covid-external/forecast_JAPAN_PREFECTURE_28.csv")
+latest_gfile = get_gdata()
+google_files.append(latest_gfile)
 
-data = pd.read_csv("https://storage.googleapis.com/covid-external/forecast_JAPAN_PREFECTURE_28.csv")
+data = pd.read_csv(latest_gfile)
 pref_list = data["prefecture_name"].unique().tolist()
 
 print("Processing start------")
