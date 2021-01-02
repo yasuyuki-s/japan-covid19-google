@@ -13,12 +13,20 @@ Googleの公開する「COVID-19感染予測(日本版)」による陽性者数�
 それ以外の都道府県の陽性報告数は、「NHKまとめ」のデータを利用しています(毎日更新)
 ## 公開URL
 http://covid19graph.japanwest.cloudapp.azure.com/
-## 参照データ
-- Google
+## 参照データ 
+- Google 
+https://datastudio.google.com/u/0/reporting/8224d512-a76e-4d38-91c1-935ba119eb8f/page/ncZpB?s=nXbF2P6La2M
 - NHK
+https://www3.nhk.or.jp/news/special/coronavirus/data/
 - 北海道
+https://www.harp.lg.jp/opendata/dataset/1369.html
 - 東京都
+https://catalog.data.metro.tokyo.lg.jp/dataset/t000010d0000000068
 - 大阪府
+https://covid19-osaka.info/
 - 広島県
+https://www.pref.hiroshima.lg.jp/soshiki/19/opendata-covid19.html
 - 愛媛県
+https://www.pref.ehime.jp/opendata-catalog/dataset/2174.html
 - 福岡県
+https://ckan.open-governmentdata.org/dataset/401000_pref_fukuoka_covid19_patients
