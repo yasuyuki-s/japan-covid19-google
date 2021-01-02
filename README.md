@@ -13,6 +13,8 @@ Googleの公開する「COVID-19感染予測(日本版)」による陽性者数�
 それ以外の都道府県の陽性報告数は、「NHKまとめ」のデータを利用しています(毎日更新)
 ## 公開URL
 http://covid19graph.japanwest.cloudapp.azure.com/
+## スクリーンショット
+[![GoogleによるCOVID-19感染予測と実報告数の推移](/SS.png)](http://covid19graph.japanwest.cloudapp.azure.com/)
 ## 参照データ 
 - Google 
 https://datastudio.google.com/u/0/reporting/8224d512-a76e-4d38-91c1-935ba119eb8f/page/ncZpB?s=nXbF2P6La2M
