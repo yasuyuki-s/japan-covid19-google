@@ -10,6 +10,7 @@ import glob
 from bs4 import BeautifulSoup
 import requests
 import urllib.request
+from io import StringIO
 
 sns.set()
 
@@ -32,6 +33,14 @@ def get_gdata():
 
     return google_pd_datas
 
+#nhkによる「新型コロナウイルス関連データ・ダウンロードサービス」のcsvデータを取得する
+def get_ndata():
+    n_url = "https://www3.nhk.or.jp/n-data/opendata/coronavirus/nhk_news_covid19_prefectures_daily_data.csv"
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
+    s=requests.get(n_url,headers= headers).text
+    ndata = pd.read_csv(StringIO(s))
+
+    return ndata
 
 #googleによる「COVID-19感染予測（日本版）」のcsvからデータを抽出する
 def pred_data(gdata,prefecture):
@@ -73,7 +82,7 @@ def standard_format(data):
     return observed
 
 #都道府県別の陽性者数（累計・日別）時系列データを取得
-def historic_data(prefecture,gdata):
+def historic_data(prefecture, pref_code, ndata):
     if prefecture == "TOKYO":
         data = pd.read_csv("https://stopcovid19.metro.tokyo.lg.jp/data/130001_tokyo_covid19_patients.csv")
         observed = standard_format(data)
@@ -103,13 +112,13 @@ def historic_data(prefecture,gdata):
         data = pd.read_csv("https://www.pref.ehime.jp/opendata-catalog/dataset/2174/resource/7072/380008_ehime_covid19_patients.csv")
         observed = standard_format(data)        
     else:
-        #上記以外の都道府県のデータは、googleの最新csvから抽出する
-        data = gdata
-        ext = data[data["prefecture_name"] == prefecture]
-        ext = ext.dropna(subset=["cumulative_confirmed_ground_truth"])
-        data_t = pd.to_datetime(ext["target_prediction_date"], format='%Y-%m-%d')
-        observed = pd.DataFrame({"date": data_t.copy(), "confirmed": ext["new_confirmed_ground_truth"], "cumulative_confirmed": ext["cumulative_confirmed_ground_truth"]})
+        #上記以外の都道府県のデータは、nhkの最新csvから抽出する
+        data = ndata
+        ext = data[data["都道府県コード"] == pref_code]
+        data_t = pd.to_datetime(ext["日付"], format='%Y/%m/%d')
+        observed = pd.DataFrame({"date": data_t.copy(), "confirmed": ext["各地の感染者数_1日ごとの発表数"], "cumulative_confirmed": ext["各地の感染者数_累計"]})
         observed = observed.sort_values(by="date")
+        observed = observed.reset_index()
     date_o = observed["date"]
     o_date = "{:02d}{:02d}".format(date_o.iat[-1].month,date_o.iat[-1].day)
     cumulative_o = observed["cumulative_confirmed"].values
@@ -117,7 +126,7 @@ def historic_data(prefecture,gdata):
     sma_o = observed["confirmed"].rolling(7).mean()
     return date_o, cumulative_o, daily_o, o_date, sma_o
 
-def plot_by_matplotlib(prefecture, google_pd_datas):
+def plot_by_matplotlib(prefecture, pref_code, google_pd_datas, nhk_historic_data):
     xfmt = mdates.DateFormatter("%m/%d")
     xloc = mdates.DayLocator(bymonthday=None, interval=2)
     fig = plt.figure(figsize=(15,20))
@@ -133,7 +142,7 @@ def plot_by_matplotlib(prefecture, google_pd_datas):
         bx.plot(date_p,new_confirmed,label=label)
         i += 1
 
-    date_o, cumulative_o, daily_o, o_date, sma_o = historic_data(prefecture,google_pd_datas[-1])
+    date_o, cumulative_o, daily_o, o_date, sma_o = historic_data(prefecture, pref_code, nhk_historic_data)
 
     label= "Historic" + o_date
     ax.plot(date_o,cumulative_o, label=label, marker= ".")
@@ -171,11 +180,14 @@ def plot_by_matplotlib(prefecture, google_pd_datas):
 
 
 google_pd_datas = get_gdata()
+nhk_historic_data = get_ndata()
 latest_data = google_pd_datas[-1]
 pref_list = latest_data["prefecture_name"].unique().tolist()
 
 print("Processing start------")
+pref_code = 1
 for prefecture in pref_list:
     print(prefecture)
-    plot_by_matplotlib(prefecture, google_pd_datas)
+    plot_by_matplotlib(prefecture, pref_code, google_pd_datas, nhk_historic_data)
+    pref_code += 1
 print("Processing finish-----")
