@@ -23,6 +23,9 @@
 .top_list{
 	margin-top:5px;
 }
+.update{
+  text-align: right;
+}
 /* パソコン・スマホ共通のCSS */
 #PageTopBtn {
     position: fixed; /*ボタンの配置場所を固定*/

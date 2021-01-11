@@ -8,15 +8,16 @@
     <meta http-equiv="Content-Style-Type" content="text/css">
     <meta http-equiv="Content-Script-Type" content="text/javascript">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="scripts/update_datetime.js"></script>
+    <script src="scripts/update.js"></script>
     <script src="scripts/scroll.js"></script>
     <link rel="stylesheet" href="css/stylesheet.css" type="text/css">
-
   </head>
 
   <body>
-
     <header>
       <h1><span class="text">GoogleによるCOVID-19感染予測と実報告数の推移</span></h1>
+      <div class="update"><span>最終更新：</span><span id="update-date">unknown</span></div>
     </header>
     <nav>
         <h3 class="text">What's this?</h3>
@@ -355,7 +356,6 @@
           </ul>
       </ul>
     </article>
-
 
     <footer>
 
