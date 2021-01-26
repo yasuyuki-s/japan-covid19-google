@@ -107,10 +107,15 @@ def historic_data(prefecture, pref_code, ndata):
     elif prefecture == "HIROSHIMA":
         data = pd.read_csv("https://www.pref.hiroshima.lg.jp/soshiki_file/brand/covid19/opendata/340006_hiroshima_covid19_03_status_items.csv",encoding="shift_jis")
         data_t = pd.to_datetime(data["年月日"], format='%Y-%m-%d')
-        observed = pd.DataFrame({"date": data_t, "confirmed": data["新規陽性者"], "cumulative_confirmed": data["陽性患者_累計"]})       
+        observed = pd.DataFrame({"date": data_t, "confirmed": data["新規陽性者"], "cumulative_confirmed": data["陽性患者_累計"]})
+
     elif prefecture == "EHIME":
-        data = pd.read_csv("https://www.pref.ehime.jp/opendata-catalog/dataset/2174/resource/7072/380008_ehime_covid19_patients.csv")
-        observed = standard_format(data)        
+        html = requests.get("https://www.pref.ehime.jp/opendata-catalog/dataset/2174.html")
+        soup = BeautifulSoup(html.content, "html.parser")
+        data_location = soup.find(class_="download").get("href")
+        url = "https://www.pref.ehime.jp" + data_location
+        data = pd.read_csv(url)
+        observed = standard_format(data)
     else:
         #上記以外の都道府県のデータは、nhkの最新csvから抽出する
         data = ndata
