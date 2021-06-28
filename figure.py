@@ -25,7 +25,7 @@ def get_gdata():
         google_pd_datas.append(gdata)
 
     #予測値を算出した基準日
-    f_date = pd.to_datetime(gdata["forecast_date"], format='%Y-%m-%d').iat[0]
+    f_date = pd.to_datetime(gdata["forecast_date"], format='%Y-%m-%d %H:%M:%S %Z').iat[0].tz_localize(None)
     #予測基準日をYYYYMMDDの形式に変換
     f_date = "{:04d}{:02d}{:02d}".format(f_date.year,f_date.month,f_date.day)
     filename = "google_files_storage/forecast_JAPAN_PREFECTURE_28_" + f_date + ".csv"
@@ -47,7 +47,10 @@ def pred_data(gdata,prefecture):
     #指定した都道府県のデータを抽出
     ext = gdata[gdata["prefecture_name"] == prefecture].copy()
     #日付データをdatetime形式に変換
-    ext["target_prediction_date"] = pd.to_datetime(ext["target_prediction_date"], format='%Y-%m-%d')
+    try:
+        ext["target_prediction_date"] = pd.to_datetime(ext["target_prediction_date"], format='%Y-%m-%d')
+    except:
+        ext["target_prediction_date"] = pd.to_datetime(ext["target_prediction_date"], format='%Y-%m-%d %H:%M:%S %Z').dt.tz_localize(None)
     #日付順にソート
     ext = ext.sort_values(by="target_prediction_date")
     #予測期間
@@ -62,7 +65,10 @@ def pred_data(gdata,prefecture):
     new_confirmed = ext["new_confirmed"].values
     
     #予測値を算出した基準日
-    forecast_date = pd.to_datetime(ext["forecast_date"], format='%Y-%m-%d')
+    try:
+        forecast_date = pd.to_datetime(ext["forecast_date"], format='%Y-%m-%d')
+    except:
+        forecast_date = pd.to_datetime(ext["forecast_date"], format='%Y-%m-%d %H:%M:%S %Z').dt.tz_localize(None)
     #予測基準日をMMDDの形式に変換（凡例用）
     f_date = "{:02d}{:02d}".format(forecast_date.iat[0].month,forecast_date.iat[0].day)
     
