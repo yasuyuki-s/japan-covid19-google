@@ -89,47 +89,47 @@ def standard_format(data):
 
 #都道府県別の陽性者数（累計・日別）時系列データを取得
 def historic_data(prefecture, pref_code, ndata):
-    if prefecture == "TOKYO":
-        data = pd.read_csv("https://stopcovid19.metro.tokyo.lg.jp/data/130001_tokyo_covid19_patients.csv")
-        observed = standard_format(data)
+    # if prefecture == "TOKYO":
+    #     data = pd.read_csv("https://stopcovid19.metro.tokyo.lg.jp/data/130001_tokyo_covid19_patients.csv")
+    #     observed = standard_format(data)
 
-    elif prefecture == "OSAKA":
-        data = pd.read_csv("https://covid19-osaka.info/data/summary.csv",encoding="shift_jis")
-        data_t = pd.to_datetime(data["日付"], format='%Y-%m-%d')
-        observed = pd.DataFrame({"date": data_t, "confirmed": data["陽性人数"], "cumulative_confirmed": data["陽性累計"]})
+    # elif prefecture == "OSAKA":
+    #     data = pd.read_csv("https://covid19-osaka.info/data/summary.csv",encoding="shift_jis")
+    #     data_t = pd.to_datetime(data["日付"], format='%Y-%m-%d')
+    #     observed = pd.DataFrame({"date": data_t, "confirmed": data["陽性人数"], "cumulative_confirmed": data["陽性累計"]})
     
-    elif prefecture == "FUKUOKA":
-        html = requests.get("https://ckan.open-governmentdata.org/dataset/401000_pref_fukuoka_covid19_patients")
-        soup = BeautifulSoup(html.content, "html.parser")
-        data_id = soup.find(class_="resource-item").get("data-id")
-        url = "https://ckan.open-governmentdata.org/dataset/8a9688c2-7b9f-4347-ad6e-de3b339ef740/resource/" + data_id + "/download/400009_pref_fukuoka_covid19_patients.csv"
-        data = pd.read_csv(url)
-        observed = standard_format(data)
+    # elif prefecture == "FUKUOKA":
+    #     html = requests.get("https://ckan.open-governmentdata.org/dataset/401000_pref_fukuoka_covid19_patients")
+    #     soup = BeautifulSoup(html.content, "html.parser")
+    #     data_id = soup.find(class_="resource-item").get("data-id")
+    #     url = "https://ckan.open-governmentdata.org/dataset/8a9688c2-7b9f-4347-ad6e-de3b339ef740/resource/" + data_id + "/download/400009_pref_fukuoka_covid19_patients.csv"
+    #     data = pd.read_csv(url)
+    #     observed = standard_format(data)
     
-    elif prefecture == "HOKKAIDO":
-        data = pd.read_csv("https://www.harp.lg.jp/opendata/dataset/1369/resource/3132/010006_hokkaido_covid19_patients.csv",encoding="shift_jis")
-        observed = standard_format(data)
+    # elif prefecture == "HOKKAIDO":
+    #     data = pd.read_csv("https://www.harp.lg.jp/opendata/dataset/1369/resource/3132/010006_hokkaido_covid19_patients.csv",encoding="shift_jis")
+    #     observed = standard_format(data)
 
-    elif prefecture == "HIROSHIMA":
-        data = pd.read_csv("https://www.pref.hiroshima.lg.jp/soshiki_file/brand/covid19/opendata/340006_hiroshima_covid19_03_status_items.csv",encoding="shift_jis")
-        data_t = pd.to_datetime(data["年月日"], format='%Y-%m-%d')
-        observed = pd.DataFrame({"date": data_t, "confirmed": data["新規陽性者"], "cumulative_confirmed": data["陽性患者_累計"]})
+    # elif prefecture == "HIROSHIMA":
+    #     data = pd.read_csv("https://www.pref.hiroshima.lg.jp/soshiki_file/brand/covid19/opendata/340006_hiroshima_covid19_03_status_items.csv",encoding="shift_jis")
+    #     data_t = pd.to_datetime(data["年月日"], format='%Y-%m-%d')
+    #     observed = pd.DataFrame({"date": data_t, "confirmed": data["新規陽性者"], "cumulative_confirmed": data["陽性患者_累計"]})
 
-    elif prefecture == "EHIME":
-        html = requests.get("https://www.pref.ehime.jp/opendata-catalog/dataset/2174.html")
-        soup = BeautifulSoup(html.content, "html.parser")
-        data_location = soup.find(class_="download").get("href")
-        url = "https://www.pref.ehime.jp" + data_location
-        data = pd.read_csv(url)
-        observed = standard_format(data)
-    else:
-        #上記以外の都道府県のデータは、nhkの最新csvから抽出する
-        data = ndata
-        ext = data[data["都道府県コード"] == pref_code]
-        data_t = pd.to_datetime(ext["日付"], format='%Y/%m/%d')
-        observed = pd.DataFrame({"date": data_t.copy(), "confirmed": ext["各地の感染者数_1日ごとの発表数"], "cumulative_confirmed": ext["各地の感染者数_累計"]})
-        observed = observed.sort_values(by="date")
-        observed = observed.reset_index()
+    # elif prefecture == "EHIME":
+    #     html = requests.get("https://www.pref.ehime.jp/opendata-catalog/dataset/2174.html")
+    #     soup = BeautifulSoup(html.content, "html.parser")
+    #     data_location = soup.find(class_="download").get("href")
+    #     url = "https://www.pref.ehime.jp" + data_location
+    #     data = pd.read_csv(url)
+    #     observed = standard_format(data)
+    # else:
+    #上記以外の都道府県のデータは、nhkの最新csvから抽出する
+    data = ndata
+    ext = data[data["都道府県コード"] == pref_code]
+    data_t = pd.to_datetime(ext["日付"], format='%Y/%m/%d')
+    observed = pd.DataFrame({"date": data_t.copy(), "confirmed": ext["各地の感染者数_1日ごとの発表数"], "cumulative_confirmed": ext["各地の感染者数_累計"]})
+    observed = observed.sort_values(by="date")
+    observed = observed.reset_index()
     date_o = observed["date"]
     o_date = "{:02d}{:02d}".format(date_o.iat[-1].month,date_o.iat[-1].day)
     cumulative_o = observed["cumulative_confirmed"].values
