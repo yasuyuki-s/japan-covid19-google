@@ -145,12 +145,17 @@ def plot_by_matplotlib(prefecture, pref_code, google_pd_datas, nhk_historic_data
     bx = fig.add_subplot(211)
     cmap = plt.get_cmap("tab10")
     i=0
+    ax_max_g=0
+    bx_max_g=0
     for gdata in google_pd_datas:
         date_p, pred, pred_q975, pred_q025, new_confirmed, f_date = pred_data(gdata,prefecture)
         label= "Forecast" + f_date
         ax.plot(date_p,pred,label=label)
         ax.fill_between(date_p,pred_q025,pred_q975,alpha=0.3)
         bx.plot(date_p,new_confirmed,label=label)
+
+        ax_max_g = max(ax_max_g,np.nanmax(pred_q975))
+        bx_max_g = max(bx_max_g,np.nanmax(new_confirmed))
         i += 1
 
     date_o, cumulative_o, daily_o, o_date, sma_o = historic_data(prefecture, pref_code, nhk_historic_data)
@@ -175,13 +180,18 @@ def plot_by_matplotlib(prefecture, pref_code, google_pd_datas, nhk_historic_data
     bx.xaxis.set_major_locator(xloc)
     bx.xaxis.set_major_formatter(xfmt)
     bx.set_xlim([xmin,xmax])
+    bx.set_ylim([0,max(bx_max_g,max(daily_o[-40:-1]))*1.1])
     bottom_y = cumulative_o[date_o[date_o==xmin].index]
+    margin = max(ax_max_g,max(cumulative_o[-40:-1])) * 0.1
     if bottom_y.size!=0:
-        ax.set_ylim(bottom=bottom_y[0])
+        margin = max(ax_max_g,max(cumulative_o[-40:]))-bottom_y[0]
+        margin = margin * 0.1
+        ax.set_ylim(bottom= bottom_y[0]-margin)
+    ax.set_ylim(top=max(ax_max_g,max(cumulative_o[-40:]))+margin)
     labels = bx.get_xticklabels()
     plt.setp(labels, rotation=45)
     bx.grid(True)
-    
+
     label = "./www/img/"+ prefecture + ".png"
     
     #plt.show()
