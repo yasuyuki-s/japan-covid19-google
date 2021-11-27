@@ -185,7 +185,7 @@ def plot_by_matplotlib(prefecture, pref_code, google_pd_datas, nhk_historic_data
     label = "./www/img/"+ prefecture + ".png"
     
     #plt.show()
-    fig.savefig(label)
+    fig.savefig(label,bbox_inches='tight')
     plt.close(fig)
 
 
