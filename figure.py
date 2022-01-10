@@ -180,7 +180,7 @@ def plot_by_matplotlib(prefecture, pref_code, google_pd_datas, nhk_historic_data
     bx.xaxis.set_major_locator(xloc)
     bx.xaxis.set_major_formatter(xfmt)
     bx.set_xlim([xmin,xmax])
-    bx.set_ylim([0,max(bx_max_g,max(daily_o[-40:-1]))*1.1])
+    bx.set_ylim([0,max(bx_max_g,max(daily_o[-40:]))*1.1])
     bottom_y = cumulative_o[date_o[date_o==xmin].index]
     margin = max(ax_max_g,max(cumulative_o[-40:-1])) * 0.1
     if bottom_y.size!=0:
